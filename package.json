@@ -1,0 +1,32 @@
+{
+	"name": "awdl",
+	"description": "Send data via Apple Wireless Direct Link (AWDL) using JavaScript.",
+	"version": "1.0.0",
+	"main": "index.js",
+	"files": [
+		"index.js",
+		"example.js"
+	],
+	"keywords": [
+		"awdl",
+		"apple wireless direct link",
+		"wifi",
+		"airdrop"
+	],
+	"author": "Jannis R <mail@jannisr.de>",
+	"homepage": "https://github.com/derhuerst/node-awdl",
+	"repository": "derhuerst/node-awdl",
+	"bugs": "https://github.com/derhuerst/node-awdl/issues",
+	"license": "ISC",
+	"engines": {
+		"node": ">=12"
+	},
+	"dependencies": {
+	},
+	"devDependencies": {
+	},
+	"scripts": {
+		"test": "node test.js",
+		"prepublishOnly": "npm test"
+	}
+}
