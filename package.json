@@ -22,6 +22,11 @@
 		"node": ">=12"
 	},
 	"dependencies": {
+		"dns-packet": "^5.2.1",
+		"ffi": "github:lxe/node-ffi#node-12",
+		"ipaddr.js": "^1.9.1",
+		"multicast-dns": "file:multicast-dns",
+		"ref": "github:lxe/ref#node-12"
 	},
 	"devDependencies": {
 	},
