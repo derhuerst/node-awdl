@@ -1,19 +1,30 @@
 'use strict'
 
-const {createSocket, Protocol, AddressFamily} = require('raw-socket')
+const {exec} = require('child_process')
+const {decode} = require('dns-packet')
 
-const socket = createSocket({
-	addressFamily: AddressFamily.IPv4,
-	protocol: Protocol.UDP
+const onMessage = (msg) => {
+	const {type, questions, answers} = decode(msg)
+	console.log(type, questions, answers)
+}
+
+;(async () => {
+	const {stderr, stdout} = exec([
+		'nc', // netcat
+		'-6', // IPv6
+		'-u', // UDP
+		'-b', 'awdl0', // use the `awdl0` network interface
+		'-l', '5353', // listen on 5353 for incoming data
+		'-A' // enable SO_RECV_ANYIF to receive AWDL traffic
+	].join(' '), {
+		encoding: 'buffer'
+	})
+	stderr.pipe(process.stderr)
+
+	stdout.on('error', console.error)
+	stdout.on('data', onMessage)
+})()
+.catch((err) => {
+	console.error(err)
+	process.exit(1)
 })
-socket.on('close', () => console.info('socket closed'))
-socket.on('error', console.error)
-socket.on('message', (msg, addr) => console.info(addr, msg))
-
-// const ffi = require('ffi')
-// const libm = ffi.Library('libm', {
-// 	ceil: ['double', ['double']]
-// })
-// console.log(libm.ceil(1.5))
-
-// todo
