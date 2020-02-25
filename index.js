@@ -22,6 +22,8 @@ const listenOnAWDL = (port, opt = {}) => {
 		...opt
 	}
 
+	const iface = (networkInterfaces().awdl0 || [])[0]
+
 	const call = [
 		'nc', // netcat
 		'-b', 'awdl0', // use the `awdl0` network interface
@@ -64,6 +66,9 @@ const listenOnAWDL = (port, opt = {}) => {
 		})
 	stream.once('close', exitOnClose)
 
+	// expose useful info
+	stream.interface = iface
+	stream.process = proc
 	return stream
 }
 
