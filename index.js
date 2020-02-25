@@ -1,30 +1,66 @@
 'use strict'
 
+const {platform, networkInterfaces} = require('os')
 const {exec} = require('child_process')
-const {decode} = require('dns-packet')
+const duplexify = require('duplexify')
 
-const onMessage = (msg) => {
-	const {type, questions, answers} = decode(msg)
-	console.log(type, questions, answers)
+const isSupported = () => {
+	// see https://github.com/derhuerst/node-awdl/issues/2
+	if (platform() !== 'darwin') return false
+	const {awdl0} = networkInterfaces()
+	if (!Array.isArray(awdl0) || !awdl0[0]) return false
+	return awdl0[0].family === 'IPv6'
 }
 
-;(async () => {
-	const {stderr, stdout} = exec([
-		'nc', // netcat
-		'-6', // IPv6
-		'-u', // UDP
-		'-b', 'awdl0', // use the `awdl0` network interface
-		'-l', '5353', // listen on 5353 for incoming data
-		'-A' // enable SO_RECV_ANYIF to receive AWDL traffic
-	].join(' '), {
-		encoding: 'buffer'
-	})
-	stderr.pipe(process.stderr)
+const listenOnAWDL = (port, opt = {}) => {
+	if (!Number.isInteger(port)) throw new Error('port must be an integer')
+	opt = {
+		udp: false, // Use UDP instead of TCP?
+		readonly: false, // Disallow sending data?
+		// Set SO_RECV_ANYIF to receive traffic from all interfaces?
+		recvAnyif: false,
+		...opt
+	}
 
-	stdout.on('error', console.error)
-	stdout.on('data', onMessage)
-})()
-.catch((err) => {
-	console.error(err)
-	process.exit(1)
-})
+	const call = [
+		'nc', // netcat
+		'-b', 'awdl0', // use the `awdl0` network interface
+		'-6', // IPv6
+		'-l', port + '',
+	]
+	if (opt.udp) call.push('-u')
+	if (opt.readonly) call.push('-d')
+	if (opt.recvAnyif) call.push('-A')
+
+	const onExit = (err, stderr) => {
+		if (!err) {
+			stream.destroy()
+			return
+		}
+
+		const text = err ? err.message : (err + '')
+		const msg = text.split('\n')[0]
+		const error = new Error('failed to listen on the AWDL interface: ' + msg)
+		error.spawnError = err
+		error.stderr = stderr
+		stream.destroy(error)
+	}
+
+	const proc = exec(call.join(' '), {encoding: 'buffer'}, onExit)
+
+	const stream = opt.readonly
+		? proc.stdout
+		: duplexify(proc.stdin, proc.stdout, {
+			// If the process exits with an error, `proc.stdin` and/or
+			// `proc.stdout` are being `destroy()`ed *without* an `Error`.
+			// In order to `destroy()` our duplex stream with an appropriate
+			// `Error`, we do that manually.
+			autoDestroy: false
+		})
+	return stream
+}
+
+module.exports = {
+	isSupported,
+	listenOnAWDL,
+}
