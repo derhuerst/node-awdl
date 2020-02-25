@@ -25,6 +25,7 @@
 		"duplexify": "^4.1.1"
 	},
 	"devDependencies": {
+		"dns-packet": "^5.2.1"
 	},
 	"scripts": {
 		"test": "node test.js",
