@@ -49,14 +49,14 @@ This script will wait for a "handshake" DNS-SD packet for 10 seconds.
 
 awdl.once('data', (msg) => {
 	const {answers} = decode(msg)
-	console.error(...answers)
 	if (answers.some(isAirDropRecord)) {
-		console.info('Received an AirDrop packet. ✔︎')
-		process.exit(0)
+		console.info('Received an AirDrop packet, destroying. ✔︎')
+		awdl.destroy()
+		clearTimeout(failTimer)
 	}
 })
 
-setTimeout(() => {
+const failTimer = setTimeout(() => {
 	console.error(`Didn't receive a packet within 10 seconds. :(`)
 	process.exit(2)
 }, 10_000)

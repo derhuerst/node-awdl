@@ -33,6 +33,8 @@ const listenOnAWDL = (port, opt = {}) => {
 	if (opt.recvAnyif) call.push('-A')
 
 	const onExit = (err, stderr) => {
+		stream.removeListener('close', exitOnClose)
+
 		if (!err) {
 			stream.destroy()
 			return
@@ -47,6 +49,9 @@ const listenOnAWDL = (port, opt = {}) => {
 	}
 
 	const proc = exec(call.join(' '), {encoding: 'buffer'}, onExit)
+	const exitOnClose = () => {
+		proc.kill('SIGKILL') // let child process exit immediately
+	}
 
 	const stream = opt.readonly
 		? proc.stdout
@@ -57,6 +62,8 @@ const listenOnAWDL = (port, opt = {}) => {
 			// `Error`, we do that manually.
 			autoDestroy: false
 		})
+	stream.once('close', exitOnClose)
+
 	return stream
 }
 
