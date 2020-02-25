@@ -28,6 +28,9 @@ const listenOnAWDL = (port, opt = {}) => {
 		'nc', // netcat
 		'-b', 'awdl0', // use the `awdl0` network interface
 		'-6', // IPv6
+		// todo: -k
+		// Forces nc to stay listening for another connection after its current
+		// connection is completed.
 		'-l', port + '',
 	]
 	if (opt.udp) call.push('-u')

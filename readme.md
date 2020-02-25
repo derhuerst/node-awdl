@@ -2,6 +2,12 @@
 
 **Send data via [Apple Wireless Direct Link (AWDL)](https://owlink.org/wiki/#what-is-apple-wireless-direct-link-awdl) using JavaScript.**
 
+[![npm version](https://img.shields.io/npm/v/awdl.svg)](https://www.npmjs.com/package/awdl)
+![ISC-licensed](https://img.shields.io/github/license/derhuerst/node-awdl.svg)
+![minimum Node.js version](https://img.shields.io/node/v/awdl.svg)
+[![chat with me on Gitter](https://img.shields.io/badge/chat%20with%20me-on%20gitter-512e92.svg)](https://gitter.im/derhuerst)
+[![support me on Patreon](https://img.shields.io/badge/support%20me-on%20patreon-fa7664.svg)](https://patreon.com/derhuerst)
+
 From the [*Open Wireless Link*](https://owlink.org/), an awesome project that seeks to reverse-engineer AWDL:
 
 > ### What is Apple Wireless Direct Link (AWDL)?
@@ -24,12 +30,6 @@ From the [*Open Wireless Link*](https://owlink.org/), an awesome project that se
 > In technical terms, [we found](https://owlink.org/publications/) that AWDL works essentially works as follow:
 >
 > In short, each AWDL node announces a sequence of Availability Windows (AWs) indicating its readiness to communicate with other AWDL nodes. An elected master node synchronizes these sequences. Outside the AWs, nodes can tune their Wi-Fi radio to a different channel to communicate with an access point, or could turn it off to save energy.
-
-[![npm version](https://img.shields.io/npm/v/awdl.svg)](https://www.npmjs.com/package/awdl)
-![ISC-licensed](https://img.shields.io/github/license/derhuerst/node-awdl.svg)
-![minimum Node.js version](https://img.shields.io/node/v/awdl.svg)
-[![chat with me on Gitter](https://img.shields.io/badge/chat%20with%20me-on%20gitter-512e92.svg)](https://gitter.im/derhuerst)
-[![support me on Patreon](https://img.shields.io/badge/support%20me-on%20patreon-fa7664.svg)](https://patreon.com/derhuerst)
 
 
 ## Installation
